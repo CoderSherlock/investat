@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load math_ops %}
+
+{% block header %}
+<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                &#128200;
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
+                <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-secondary">Dividends</a></li>
+                <li><a href="/analysis" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+{% endblock %}
+{% block body %}
+<div>
+    <div>
+        <a href="/dividends" role="button" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-left-square">
+            </i>
+            Back to all dividends
+        </a>
+        <br>
+        <h3>
+            Detail of ${{dividend.amount}} for {{dividend.ticker}} in {{dividend.div_date}}
+        </h3>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <table class="table">
+                <thead>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Dividend #</a></th>
+                        <td scope="">{{dividend.id}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Ticker</th>
+                        <td scope="">{{dividend.ticker}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Value</th>
+                        <td scope="">{{dividend.amount}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Gross per Share</th>
+                        <td scope="">{{dividend.gross_per_share}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row">Date</th>
+                        <td scope="">{{dividend.div_date}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <div class="card" style="width: auto;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ticker.product_name}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ticker.ticker}}</h6>
+                    <p class="card-text">Market name: {{ticker.market_name}}<br>
+                        Type: {{ticker.get_product_type_display}}<br>
+                        Operator: {{ticker.operator_name}}</p>
+                    <span class="stock-quote" data-symbol="GOOGL"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

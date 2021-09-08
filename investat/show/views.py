@@ -5,12 +5,13 @@ from django.template import loader
 from django.http import HttpResponse
 from django.urls import reverse
 
-from .models import Brokerage, Ticker, Transaction
+from .models import Brokerage, Dividend, Ticker, Transaction
 import datetime
+import statistics
 
 
 def index(request):
-    all_transactions = Transaction.objects.order_by('tran_date')[:]
+    all_transactions = Transaction.objects.order_by('-trans_date')[:]
     template = loader.get_template('index.html')
     context = {'transactions': all_transactions}
     return HttpResponse(template.render(context, request))
@@ -18,14 +19,16 @@ def index(request):
 
 def transaction_detail(request, transaction_id):
     transaction = Transaction.objects.get(id=transaction_id)
+    ticker = Ticker.objects.get(ticker=transaction.ticker)
     template = loader.get_template('transaction_detail.html')
-    context = {'transaction': transaction}
+    context = {'transaction': transaction,
+               'ticker': ticker}
     return HttpResponse(template.render(context, request))
 
 
 def add_record(request):
     template = loader.get_template('add_record.html')
-    all_tickers = Ticker.objects.all()[:]
+    all_tickers = Ticker.objects.order_by('ticker')[:]
     all_brokerages = Brokerage.objects.all()[:]
     context = {}
     context['all_tickers'] = all_tickers
@@ -47,7 +50,7 @@ def add_record_submit(request):
         ticker=Ticker.objects.get(id=tickerid),
         volume=volume,
         price=price,
-        tran_date=date,
+        trans_date=date,
         brokerage=Brokerage.objects.get(id=brokerageid)
     )
     # except:
@@ -59,7 +62,7 @@ def add_record_submit(request):
 
 
 def holdings(request):
-    all_transactions = Transaction.objects.order_by('tran_date')[:]
+    all_transactions = Transaction.objects.order_by('trans_date')[:]
     all_holdings = {}
     for transaction in all_transactions:
         vol = transaction.volume if transaction.trans_type == 'B' else -transaction.volume
@@ -75,36 +78,95 @@ def holdings(request):
 def holding_detail(request, ticker):
     ticker_object = Ticker.objects.get(ticker=ticker)
     template = loader.get_template('holding_detail.html')
-    transactions = Transaction.objects.filter(ticker=ticker_object).order_by('tran_date')[:]
+    transactions = Transaction.objects.filter(
+        ticker=ticker_object).order_by('trans_date')[:]
 
     holding_amount_change = []
-    cost_per_share = 0.0
-    cost_per_share_vol = 0.0
+    cost_per_share = transactions[0].volume * transactions[0].price
+    cost_per_share_vol = transactions[0].volume
     current_vol = transactions[0].volume
-    last_date = transactions[0].tran_date
+    last_date = transactions[0].trans_date
     for transaction in transactions[1:]:
-        if (transaction.tran_date != last_date):
+        if (transaction.trans_date != last_date):
             holding_amount_change.append([last_date, current_vol])
-        last_date = transaction.tran_date
+        last_date = transaction.trans_date
         if transaction.trans_type == 'B':
             current_vol += transaction.volume
             cost_per_share += transaction.volume * transaction.price
             cost_per_share_vol += transaction.volume
         else:
-            current_vol += -transaction.volume      
+            current_vol += -transaction.volume
     holding_amount_change.append([last_date, current_vol])
-
 
     context = {'transactions': transactions,
                'ticker': ticker_object,
-               'changes_by_date':holding_amount_change,
-               'cost_per_share': round(cost_per_share / cost_per_share_vol, 4)}
+               'changes_by_date': holding_amount_change,
+               'cost_per_share': round(cost_per_share / cost_per_share_vol, 4),
+               'current_vol': holding_amount_change[-1][-1]}
     return HttpResponse(template.render(context, request))
 
 
 def dividends(request):
-    return HttpResponse("dividends")
+    all_dividends = Dividend.objects.order_by('-div_date')[:]
+    template = loader.get_template('dividend.html')
+    context = {'dividends': all_dividends}
+    return HttpResponse(template.render(context, request))
 
+
+def dividend_detail(request, dividend_id):
+    dividend = Dividend.objects.get(id=dividend_id)
+    ticker = Ticker.objects.get(ticker=dividend.ticker)
+    template = loader.get_template('dividend_detail.html')
+    context = {'dividend': dividend,
+               'ticker': ticker}
+    return HttpResponse(template.render(context, request))
+
+
+def dividend_by_ticker(request, ticker):
+    ticker_object = Ticker.objects.get(ticker=ticker)
+    template = loader.get_template('holding_detail.html')
+    all_dividends = Dividend.objects.filter(
+        ticker=ticker_object).order_by('div_date')[:]
+    gross_changes = []
+    total_dividend = 0.0
+    for dividend in all_dividends:
+        gross_changes.append([dividend.div_date, dividend.gross_per_share])
+        total_dividend += dividend.amount
+    template = loader.get_template('dividend_ticker_detail.html')
+    context = {'dividends': all_dividends,
+               'ticker': ticker_object, 
+               'gross_changes': gross_changes,
+               'average_gross': round(statistics.mean([x[1] for x in gross_changes]), 4),
+               'total_dividend': round(total_dividend, 4)}
+    return HttpResponse(template.render(context, request))
+
+
+def add_dividend_record(request):
+    template = loader.get_template('add_dividend.html')
+    all_tickers = Ticker.objects.order_by('ticker')[:]
+    all_brokerages = Brokerage.objects.all()[:]
+    context = {}
+    context['all_tickers'] = all_tickers
+    context['all_brokerages'] = all_brokerages
+    return HttpResponse(template.render(context, request))
+
+def add_dividend_record_submit(request):
+    # try:
+    tickerid = request.POST['ticker']
+    amount = request.POST['amount']
+    gross_per_share = request.POST['gross_per_share']
+    date = request.POST['date']
+
+    t = Dividend.objects.create(
+        ticker=Ticker.objects.get(id=tickerid),
+        amount=amount,
+        gross_per_share=gross_per_share,
+        div_date=date,
+    )
+    # except:
+    # return HttpResponse("???")
+    t.save()
+    return HttpResponseRedirect(reverse('dividends'))
 
 def watches(request):
     return HttpResponse("watches")

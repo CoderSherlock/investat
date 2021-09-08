@@ -40,7 +40,7 @@ class Brokerage(models.Model):
 
 
 class Transaction(models.Model):
-    tran_date = models.DateField('transaction date')
+    trans_date = models.DateField('transaction date')
     ticker = models.ForeignKey(Ticker, on_delete=models.PROTECT)
     price = models.FloatField(default=0)
     volume = models.FloatField(default=0)

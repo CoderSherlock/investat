@@ -12,7 +12,7 @@
                 <li><a href="/" class="nav-link px-2 text-secondary">Transactions</a></li>
                 <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
                 <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
-                <li><a href="/#" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/analysis" class="nav-link px-2 text-black">Analysis</a></li>
                 <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
             </ul>
         </div>
@@ -22,6 +22,11 @@
 {% block body %}
 <div>
     <div>
+        <a href="/" role="button" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-left-square">
+            </i>
+            Back to all transactions
+        </a>
         <h3>Detail of {{transaction.get_trans_type_display}} {{transaction.volume}} of {{transaction.ticker}}</h3>
     </div>
 </div>
@@ -58,7 +63,7 @@
                     </tr>
                     <tr>
                         <th scope="row">Date</th>
-                        <td scope="">{{transaction.tran_date}}</th>
+                        <td scope="">{{transaction.trans_date}}</th>
                     </tr>
                     <tr>
                         <th scope="row">Brokerage</th>
@@ -72,7 +77,18 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="card" style="width: auto;">
+                <div class="card-body" >
+                  <h5 class="card-title">{{ticker.product_name}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ticker.ticker}}</h6>
+                  <p class="card-text">Market name: {{ticker.market_name}}<br>
+                  Type: {{ticker.get_product_type_display}}<br>
+                  Operator: {{ticker.operator_name}}</p>
+                  <span class="stock-quote" data-symbol="GOOGL"></span>
+                </div>
+              </div>
+        </div>
     </div>
 </div>
 

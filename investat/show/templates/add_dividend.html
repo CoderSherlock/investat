@@ -8,9 +8,9 @@
                 &#128200;
             </a>
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-secondary">Transactions</a></li>
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
                 <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
-                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-secondary">Dividends</a></li>
                 <li><a href="/analysis" class="nav-link px-2 text-black">Analysis</a></li>
                 <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
             </ul>
@@ -22,22 +22,15 @@
 <div>
     <div>
         <div>
-            <h3>Add a new transaction</h3>
+            <h3>Add a new dividend</h3>
         </div>
     </div>
     <div class="container">
         <div class="row">
             <div class="col-8">
-                <form action="{% url 'submit a record' %}" method="post">
+                <form action="{% url 'submit a dividend record' %}" method="post">
                     {% csrf_token %}
                     <fieldset>
-                        <div class="mb-3">
-                            <label>Transaction type</label>
-                            <select class="form-select" name="type">
-                                <option value="S">Sell</option>
-                                <option value="B">Buy</option>
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label>Ticker</label>
                             <select class="form-select" name="ticker">
@@ -48,25 +41,16 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label>Volume</label>
-                            <input type="text" name="volume" class="form-control" placeholder="Volume, e.g. 66">
+                            <label>Amount</label>
+                            <input type="text" name="amount" class="form-control" placeholder="Amount, default currency is USD e.g 17.8">
                         </div>
                         <div class="mb-3">
-                            <label>Price</label>
-                            <input type="text" name="price" class="form-control" placeholder="Price, default currency is USD e.g. 23.3">
+                            <label>Gross per Share</label>
+                            <input type="text" name="gross_per_share" class="form-control" placeholder="Gross per Share, default currency is USD e.g. 0.66">
                         </div>
                         <div class="mb-3">
                             <label>Transaction date</label>
                             <input type="date" name="date" class="form-control" placeholder="Volume, e.g. 66">
-                        </div>
-                        <div class="mb-3">
-                            <label>Brokerage</label>
-                            <select class="form-select" name="brokerage">
-                                {% for brokerage in all_brokerages %}
-                                <option value="{{brokerage.id}}">{{brokerage.brokerage_name}}</option>
-                                {% endfor %}
-                                <option value="-1">Add a new brokerage ... </option>
-                            </select>
                         </div>
                     </fieldset>
                     <div>

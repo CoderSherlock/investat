@@ -4,7 +4,7 @@ from .models import Brokerage, Dividend, Operator, Transaction, Ticker
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('ticker', 'volume', 'price', 'trans_type', 'tran_date')
+    list_display = ('ticker', 'volume', 'price', 'trans_type', 'trans_date')
 
 
 class TickerAdmin(admin.ModelAdmin):

@@ -20,10 +20,10 @@
 {% endblock %}
 {% block body %}
 <div class="container">
-    <a href="/holdings" role="button" class="btn btn-outline-primary btn-sm">
+    <a href="/dividends" role="button" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-arrow-left-square">
         </i>
-        Back to all holdings
+        Back to all dividends
     </a>
     <div class="row">
         <div class="col-sm-10 col-12">
@@ -37,30 +37,19 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Ticker</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Volume</th>
-                        <th scope="col">Amount</th>
+                        <th scope="col">Value</th>
+                        <th scope="col">Gross per Share</th>
                         <th scope="col">Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for transaction in transactions %}
-                    {% if transaction.trans_type == 'S'%}
-                    <tr class="table-danger">
-                        {% elif transaction.trans_type == 'B' %}
-                    <tr class="table-success">
-                        {% else %}
+                    {% for dividend in dividends %}
                     <tr>
-                        {% endif%}
-                        <th scope="row"><a href='/trans/{{transaction.id}}'>{{transaction.id}}</a></th>
-                        <td scope="">{{transaction.ticker}}</td>
-                        <td scope="">{{transaction.get_trans_type_display}}</td>
-                        <td scope="">{{transaction.price}}</td>
-                        <td scope="">{{transaction.volume}}</td>
-                        <td scope="">
-                            {% if transaction.trans_type == 'B' %}-{% endif %}{{transaction.volume|multiply:transaction.price}}</td>
-                        <td scope="">{{transaction.trans_date}}</td>
+                        <th scope="row"><a href='/div/{{dividend.id}}'>{{dividend.id}}</a></th>
+                        <td scope="">{{dividend.ticker}}</td>
+                        <td scope="">{{dividend.amount}}</td>
+                        <td scope="">{{dividend.gross_per_share}}</td>
+                        <td scope="">{{dividend.div_date}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -71,12 +60,12 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th scope="row">Volume holding</a></th>
-                            <td scope="">{{current_vol}}</th>
+                            <th scope="row">Total Dividend</a></th>
+                            <td scope="">$ {{total_dividend}}</th>
                         </tr>
                         <tr>
-                            <th scope="row">Current cost per share</th>
-                            <td scope="">$ {{cost_per_share}}</th>
+                            <th scope="row">Average Gross per Share</th>
+                            <td scope="">$ {{average_gross}}</th>
                         </tr>
                     </tbody>
                 </table>
@@ -87,10 +76,10 @@
                 var myChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: [{%for date, changes in changes_by_date%} '{{date}}',{%endfor%}],
+                        labels: [{%for date, gross in gross_changes%} '{{date}}',{%endfor%}],
                         datasets: [{
                             label: '{{ticker.ticker}}',
-                            data: [{%for date, changes in changes_by_date%} '{{changes}}',{%endfor%}],
+                            data: [{%for date, gross in gross_changes%} '{{gross}}',{%endfor%}],
                             fill: false,
                             borderColor: 'rgb(75, 192, 192)',
                             tension: 0.1

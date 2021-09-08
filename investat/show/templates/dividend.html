@@ -8,9 +8,9 @@
                 &#128200;
             </a>
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-secondary">Transactions</a></li>
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
                 <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
-                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-secondary">Dividends</a></li>
                 <li><a href="/analysis" class="nav-link px-2 text-black">Analysis</a></li>
                 <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
             </ul>
@@ -22,10 +22,10 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-10 col-12">
-            <h3 class="float-begin">Transactions</h3>
+            <h3 class="float-begin">Dividends</h3>
         </div>
         <div class="col-sm-2 col-12">
-            <a href="/addrecord" class="btn btn-primary btn-sm float-end" role="button"><i class="bi bi-file-plus"></i>
+            <a href="/div_addrecord" class="btn btn-primary btn-sm float-end" role="button"><i class="bi bi-file-plus"></i>
                 Add</a>
         </div>
     </div>
@@ -35,29 +35,19 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Ticker</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Volume</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Gross per Share</th>
                     <th scope="col">Date</th>
                 </tr>
             </thead>
             <tbody>
-                {% for transaction in transactions %}
-                {% if transaction.trans_type == 'S'%}
-                <tr class="table-danger">
-                    {% elif transaction.trans_type == 'B' %}
-                <tr class="table-success">
-                    {% else %}
+                {% for dividend in dividends %}
                 <tr>
-                    {% endif%}
-                    <th scope="row"><a href='/trans/{{transaction.id}}'>{{transaction.id}}</a></th>
-                    <td scope="">{{transaction.ticker}}</td>
-                    <td scope="">{{transaction.get_trans_type_display}}</td>
-                    <td scope="">{{transaction.price}}</td>
-                    <td scope="">{{transaction.volume}}</td>
-                    <td scope="">{% if transaction.trans_type == 'B' %}-{% endif %}{{transaction.volume|multiply:transaction.price}}</td>
-                    <td scope="">{{transaction.trans_date}}</td>
+                    <th scope="row"><a href='/div/{{dividend.id}}'>{{dividend.id}}</a></th>
+                    <td scope=""><a href='/div_by_ticker/{{dividend.ticker}}'>{{dividend.ticker}}</a></td>
+                    <td scope="">{{dividend.amount}}</td>
+                    <td scope="">{{dividend.gross_per_share}}</td>
+                    <td scope="">{{dividend.div_date}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
