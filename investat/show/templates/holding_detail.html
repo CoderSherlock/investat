@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load math_ops %}
+{% block header %}
+<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                &#128200;
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
+                <li><a href="/holdings" class="nav-link px-2 text-secondary">Holdings</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/#" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10 col-12">
+            <h3 class="float-begin">{{ticker.product_name}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Ticker</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Volume</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    {% if transaction.trans_type == 'S'%}
+                    <tr class="table-danger">
+                        {% elif transaction.trans_type == 'B' %}
+                    <tr class="table-success">
+                        {% else %}
+                    <tr>
+                        {% endif%}
+                        <th scope="row"><a href='/trans/{{transaction.id}}'>{{transaction.id}}</a></th>
+                        <td scope="">{{transaction.ticker}}</td>
+                        <td scope="">{{transaction.get_trans_type_display}}</td>
+                        <td scope="">{{transaction.price}}</td>
+                        <td scope="">{{transaction.volume}}</td>
+                        <td scope="">
+                            {% if transaction.trans_type == 'B' %}-{% endif %}{{transaction.volume|multiply:transaction.price}}</td>
+                        <td scope="">{{transaction.tran_date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <div>
+                <p>Current cost per share: $ {{cost_per_share}}</p>
+            </div>
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <script>
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [{%for date, changes in changes_by_date%} '{{date}}',{%endfor%}],
+                        datasets: [{
+                            label: '{{ticker.ticker}}',
+                            data: [{%for date, changes in changes_by_date%} '{{changes}}',{%endfor%}],
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

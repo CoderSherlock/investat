@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load math_ops %}
+{% block header %}
+<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                &#128200;
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Transactions</a></li>
+                <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/#" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+{% endblock %}
+{% block body %}
+<div>
+    <div>
+        <div>
+            <h3>Add a new transaction</h3>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <form action="{% url 'submit a record' %}" method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        <div class="mb-3">
+                            <label>Transaction type</label>
+                            <select class="form-select" name="type">
+                                <option value="S">Sell</option>
+                                <option value="B">Buy</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Ticker</label>
+                            <select class="form-select" name="ticker">
+                                {% for ticker in all_tickers %}
+                                <option value="{{ticker.id}}">{{ticker.ticker}}</option>
+                                {% endfor %}
+                                <option value="-1">Add a new product ... </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Volume</label>
+                            <input type="text" name="volume" class="form-control" placeholder="Volume, e.g. 66">
+                        </div>
+                        <div class="mb-3">
+                            <label>Price</label>
+                            <input type="text" name="price" class="form-control" placeholder="Price, default currency is USD e.g. 23.3">
+                        </div>
+                        <div class="mb-3">
+                            <label>Transaction date</label>
+                            <input type="date" name="date" class="form-control" placeholder="Volume, e.g. 66">
+                        </div>
+                        <div class="mb-3">
+                            <label>Brokerage</label>
+                            <select class="form-select" name="brokerage">
+                                {% for brokerage in all_brokerages %}
+                                <option value="{{brokerage.id}}">{{brokerage.brokerage_name}}</option>
+                                {% endfor %}
+                                <option value="-1">Add a new brokerage ... </option>
+                            </select>
+                        </div>
+                    </fieldset>
+                    <div>
+                        <input class="btn btn-primary btn-sm" type="submit" value="Submit">
+                        </input>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

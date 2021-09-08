@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load math_ops %}
+{% block header %}
+<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                &#128200;
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
+                <li><a href="/holdings" class="nav-link px-2 text-secondary">Holdings</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/#" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/watches" class="nav-link px-2 text-black">Watches</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+
+{% block body %}
+<div>
+    <div>
+        <!-- <h3>Transactions</h3> -->
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Ticker</th>
+                <th scope="col">Holding Volume</th>
+                <th scope="col">Current value</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticker, volume in holdings.items %}
+            <tr>
+                <th scope="row"><a href='/holding/{{ticker}}'>{{ticker}}</a></th>
+                <td scope="">{{volume}}</td>
+                <td scope="">0</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
