@@ -25,13 +25,13 @@ SECRET_KEY = 'django-insecure-o6ft(%11u78ev=g1%4dr0=2r#27fjd_lg7c8b)kusf3*#*tw5t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.3', '127.0.0.1', '192.168.0.217']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django_extensions',
+    'django_crontab',
     'analysis.apps.AnalysisConfig',
     'show.templatetags',
     'show.apps.ShowConfig',
@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -127,3 +127,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRONJOBS = [
+    # Do not change before remove cronjob
+    ('* */1 * * *', 'analysis.live_quote.quote_live_price')
+]

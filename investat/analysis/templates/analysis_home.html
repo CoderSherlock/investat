@@ -22,8 +22,13 @@
 
 {% block body %}
 <div>
-    <div>
-        <!-- <h3>Transactions</h3> -->
+    <div class="row">
+        <div class="col-sm-6 col-12">
+            <h3 class="float-begin">Analysis</h3>
+        </div>
+        <div class="col-sm-6 col-12">
+            <p class="float-end text-secondary">Market price updated @ {{market_price_update_time}}</p>
+        </div>
     </div>
 </div>
 <div class="table-responsive">
@@ -42,7 +47,7 @@
         <tbody>
             {% for key, value in holdings.items%}
             <tr>
-                <th scope="row"><a href='/holding/{{ticker}}'>{{key}}</a></th>
+                <th scope="row"><a href='/holding/{{key}}'>{{key}}</a></th>
                 <td scope="">{{value}}</td>
                 <td scope="">{{cost_per_share|get_item:key}}</td>
                 <td scope="">{{current_prices|get_item:key}}</td>
@@ -54,4 +59,81 @@
         </tbody>
     </table>
 </div>
+<br>
+<div class="row">
+    <div class="col-sm-6 col-12">
+        <h4 class="float-begin">Internal Return Rate</h4>
+        <canvas id="myChart1" width="400" height="200"></canvas>
+        <script>
+            var standard = 0
+            var ctx = document.getElementById('myChart1').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{%for key, value in xirr_of_holdings %} '{{key}}',{% endfor %}],
+            datasets: [{
+                label: 'XIRR',
+                data: [{%for key, value in xirr_of_holdings %} '{{value}}', {% endfor %}],
+                fill: true,
+                backgroundColor: '#7DCEA0',
+                            }]
+                        },
+
+            options: {
+                responsive: true,
+                    plugins: {
+                    legend: {
+                        display: false,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false,
+                            text: 'Chart.js Bar Chart'
+                    }
+                }
+            },
+                });
+        </script>
+    </div>
+    <div class="col-sm-6 col-12">
+        <h4 class="float-begin">Total Return</h4>
+        <canvas id="myChart2" width="400" height="200"></canvas>
+        <script>
+            var standard = 0
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{%for key, value in return_on_sell_list %} '{{key}}',{% endfor %}],
+            datasets: [{
+                label: 'XIRR',
+                data: [{%for key, value in return_on_sell_list %} '{{value}}', {% endfor %}],
+                fill: true,
+                backgroundColor: '#7DCEA0',
+                            }]
+                        },
+
+            options: {
+                responsive: true,
+                    plugins: {
+                    legend: {
+                        display: false,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false,
+                            text: 'Chart.js Bar Chart'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'logarithmic',
+                    }
+                }
+            },
+                });
+        </script>
+    </div>
+</div>
+
 {% endblock %}

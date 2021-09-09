@@ -6,11 +6,13 @@ from django.http import HttpResponse
 from django.urls import reverse
 
 from show.models import Dividend, Transaction, Ticker
+from .models import Live_price
 from yahoo_fin import stock_info
-from asgiref.sync import sync_to_async
+from .formulas import xirr
+import datetime
 
 
-def _index(request):
+def index(request):
     all_tickers = Ticker.objects.order_by('ticker')[:]
     all_transactions = Transaction.objects.order_by('trans_date')[:]
     all_dividends = Dividend.objects.order_by('div_date')[:]
@@ -45,13 +47,19 @@ def _index(request):
     all_holdings = {key: value for key,
                     value in all_holdings.items() if value != 0}
 
+    # Later used for XIRR
+    all_transactions_and_dividend = {key: [] for key in all_holdings.keys()}
+
     """
-    Current market price
+    Current market price and update time
     """
     current_prices = {}
+    update_time = []
     for holding in all_holdings:
-        current_prices[holding] = round(
-            stock_info.get_live_price(holding.ticker), 4)
+        lp = Live_price.objects.get(ticker=holding)
+        current_prices[holding] = round(lp.price, 4)
+        update_time.append(lp.quote_time)
+    market_price_update_time = min(update_time)
 
     """
     Total dividend
@@ -60,6 +68,8 @@ def _index(request):
     for dividend in all_dividends:
         if (dividend.ticker in total_dividend):
             total_dividend[dividend.ticker] += dividend.amount
+            all_transactions_and_dividend[dividend.ticker].append(
+                [dividend.div_date, dividend.amount])
     total_dividend = {key: round(value, 4)
                       for key, value in total_dividend.items()}
 
@@ -78,8 +88,31 @@ def _index(request):
     return_on_sell = {}
     for holding in all_holdings:
         return_on_sell[holding] = round((
-            market_value[holding] + total_dividend[holding]) / 
+            market_value[holding] + total_dividend[holding]) /
             (cost_per_share[holding] * all_holdings[holding]) * 100, 2)
+    return_on_sell_list = [[holding, return_on_sell[holding] - 100] for holding in all_holdings]
+    return_on_sell_list = sorted(return_on_sell_list, key=lambda x:x[1])
+
+    """
+    Internal return rate
+    """
+    for transaction in all_transactions:
+        if (transaction.ticker in all_transactions_and_dividend):
+            all_transactions_and_dividend[transaction.ticker].append(
+                [transaction.trans_date, transaction.volume * transaction.price * (-1 if transaction.trans_type == 'B' else 1)])
+    for holding in all_transactions_and_dividend:
+        all_transactions_and_dividend[holding].append([datetime.date.today(), market_value[holding]])
+
+    xirr_of_holdings = []
+    for holding in all_transactions_and_dividend:
+        rawdata = all_transactions_and_dividend[holding]
+        rawdata = sorted(rawdata, key = lambda x: x[0])
+        dateset = [date for [date, _] in rawdata]
+        priceset = [price for [_, price] in rawdata]
+        xirr_of_holdings.append([holding, xirr(priceset, dateset)])
+    
+    xirr_of_holdings = sorted(xirr_of_holdings, key=lambda x:x[1])
+    # print(xirr_of_holdings)
 
     template = loader.get_template('analysis_home.html')
     context = {'tickers': all_tickers,
@@ -88,7 +121,8 @@ def _index(request):
                'current_prices': current_prices,
                'total_dividend': total_dividend,
                'market_value': market_value,
-               'return_on_sell': return_on_sell}
+               'return_on_sell': return_on_sell,
+               'market_price_update_time': market_price_update_time,
+               'xirr_of_holdings': xirr_of_holdings,
+               'return_on_sell_list': return_on_sell_list}
     return HttpResponse(template.render(context, request))
-
-index = sync_to_async(_index, thread_sensitive=True)
