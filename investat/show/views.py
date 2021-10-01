@@ -65,7 +65,7 @@ def holdings(request):
     all_transactions = Transaction.objects.order_by('trans_date')[:]
     all_holdings = {}
     for transaction in all_transactions:
-        vol = transaction.volume if transaction.trans_type == 'B' else -transaction.volume
+        vol = transaction.volume if transaction.trans_type in ('B', 'R') else -transaction.volume
         if transaction.ticker not in all_holdings:
             all_holdings[transaction.ticker] = vol
         else:
@@ -90,10 +90,11 @@ def holding_detail(request, ticker):
         if (transaction.trans_date != last_date):
             holding_amount_change.append([last_date, current_vol])
         last_date = transaction.trans_date
-        if transaction.trans_type == 'B':
+        if transaction.trans_type in ('B', 'R'):
             current_vol += transaction.volume
-            cost_per_share += transaction.volume * transaction.price
-            cost_per_share_vol += transaction.volume
+            if (transaction.trans_type == 'B'):
+                cost_per_share += transaction.volume * transaction.price
+                cost_per_share_vol += transaction.volume
         else:
             current_vol += -transaction.volume
     holding_amount_change.append([last_date, current_vol])

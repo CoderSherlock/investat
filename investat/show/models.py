@@ -3,6 +3,7 @@ from django.db import models
 TRANSACTION_TYPE = [
     ('S', 'Sell'),
     ('B', 'Buy'),
+    ('R', 'Reward'),
 ]
 
 PRODUCT_TYPE = [

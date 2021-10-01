@@ -21,20 +21,28 @@ def index(request):
     cost_per_share_price = {}
     cost_per_share_vol = {}
     for transaction in all_transactions:
-        if transaction.trans_type == 'B':
+        if transaction.trans_type in ('B', 'R'):
             vol = transaction.volume
 
-            if (transaction.ticker not in cost_per_share_price):
-                cost_per_share_price.setdefault(
-                    transaction.ticker, transaction.price * transaction.volume)
-                cost_per_share_vol.setdefault(
-                    transaction.ticker, transaction.volume)
-            else:
-                cost_per_share_price[transaction.ticker] += transaction.price * \
-                    transaction.volume
-                cost_per_share_vol[transaction.ticker] += transaction.volume
+            """
+            Calculate cost per share, but not only statistic buying, not reward.
+            """
+            if (transaction.trans_type == 'B'):
+                if (transaction.ticker not in cost_per_share_price):
+                    cost_per_share_price.setdefault(
+                        transaction.ticker, transaction.price * transaction.volume)
+                    cost_per_share_vol.setdefault(
+                        transaction.ticker, transaction.volume)
+                else:
+                    cost_per_share_price[transaction.ticker] += transaction.price * \
+                        transaction.volume
+                    cost_per_share_vol[transaction.ticker] += transaction.volume
         else:
             vol = -transaction.volume
+
+        """
+        Add volume to holding pool by tickers.
+        """
         if transaction.ticker not in all_holdings:
             all_holdings[transaction.ticker] = vol
         else:
