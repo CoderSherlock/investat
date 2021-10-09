@@ -1,5 +1,5 @@
 """
-Quote live stock/any index's priace hourly
+Quote live stock/any index's price hourly
 
 """
 from analysis.models import Live_price

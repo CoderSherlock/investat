@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['192.168.1.3', '127.0.0.1', '192.168.0.217']
 # Application definition
 
 INSTALLED_APPS = [
+    'watches.apps.WatchesConfig',
     'django_crontab',
     'analysis.apps.AnalysisConfig',
     'show.templatetags',
@@ -130,5 +131,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
     # Do not change before remove cronjob
-    ('* */1 * * *', 'analysis.live_quote.quote_live_price')
+    ('* * * * *', 'analysis.live_quote.quote_live_price'),
+    ('0 0 * * *', 'watches.live_quote.quote_ticker_table'),
 ]

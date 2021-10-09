@@ -10,7 +10,6 @@ urlpatterns = [
     path('dividends/', views.dividends, name='dividends'),
     path('div/<int:dividend_id>/', views.dividend_detail, name='div detail'),
     path('div_by_ticker/<str:ticker>/', views.dividend_by_ticker, name='div ticker detail'),
-    path('watches/', views.watches, name='watches'),
     path('addrecord/', views.add_record, name='add a record'),
     path('record/submit/', views.add_record_submit, name="submit a record"),
     path('div_addrecord/', views.add_dividend_record, name='Add a dividend'),

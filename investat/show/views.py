@@ -169,5 +169,4 @@ def add_dividend_record_submit(request):
     t.save()
     return HttpResponseRedirect(reverse('dividends'))
 
-def watches(request):
-    return HttpResponse("watches")
+
