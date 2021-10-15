@@ -3,7 +3,7 @@ from django.urls.resolvers import URLPattern
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.index, name='transaction index'),
     path('trans/<int:transaction_id>/', views.transaction_detail, name='detail'),
     path('holdings/', views.holdings, name='holdings'),
     path('holding/<str:ticker>/', views.holding_detail, name='holding'),

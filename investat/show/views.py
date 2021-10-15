@@ -58,7 +58,7 @@ def add_record_submit(request):
     # return HttpResponse("???")
 
     t.save()
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('transaction index'))
 
 
 def holdings(request):

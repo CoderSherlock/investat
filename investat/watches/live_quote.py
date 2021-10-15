@@ -17,7 +17,7 @@ def quote_ticker_table():
     for etf in all_etfs:
         try:
             data = None
-            data = stock_info.get_performance(etf.ticker)
+            data = stock_info.get_performance_trailing_returns(etf.ticker)
             obj, _ = ETF.objects.update_or_create(
                 ticker=etf.ticker,
                 defaults={
@@ -43,9 +43,9 @@ def quote_ticker_table():
                 }
             )
             obj.save()
-        except:
+        except Exception as e:
             print("ETF {0}'s performance can't be updated ".format(etf.ticker))
-            print(data)
+            print(e)
             if (data != None):
                 obj, _ = ETF.objects.update_or_create(
                     ticker=etf.ticker,
