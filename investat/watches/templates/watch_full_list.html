@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load math_ops %}
+{% load dict_ops%}
+{% block header %}
+<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                &#128200;
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-black">Transactions</a></li>
+                <li><a href="/holdings" class="nav-link px-2 text-black">Holdings</a></li>
+                <li><a href="/dividends" class="nav-link px-2 text-black">Dividends</a></li>
+                <li><a href="/analysis" class="nav-link px-2 text-black">Analysis</a></li>
+                <li><a href="/watches" class="nav-link px-2 text-secondary">Watches</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10 col-12">
+            <a href="/watches" role="button" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-left-square">
+                </i>
+                Back to watches index
+            </a>
+            <h3 class="float-begin">{{title}}</h3>
+        </div>
+    </div>
+    <div>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Ticker</th>
+                    <th scope="col">1m</th>
+                    <th scope="col">3m</th>
+                    <th scope="col">ytd</th>
+                    <th scope="col">1y</th>
+                    <th scope="col">3y</th>
+                    <th scope="col">5y</th>
+                    <th scope="col">10y</th>
+                    <th scope="col" style="text-align:right">Weight</th>
+                    <th scope="col" style="text-align:right">Weighted Composite</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etf in etfs %}
+                {% if etf.weight_comp < 0 %}
+                <tr class="table-danger">
+                    {% elif etf.weight_comp > 0 %}
+                <tr class="table-success">
+                    {% else %}
+                <tr>
+                    {% endif%}
+                    <th scope="row">{{etf.id}}</th>
+                    <td scope=""><a target="_blank" href='https://finance.yahoo.com/quote/{{etf.ticker}}?p={{etf.ticker}}'>{{etf.ticker}}</a></td>
+                    <td scope="">{{etf.tr_1m|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_3m|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_ytd|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_1y|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_3y|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_5y|float_to_percent}}</td>
+                    <td scope="">{{etf.tr_10y|float_to_percent}}</td>
+                    <td scope="" style="text-align:right">{{etf.weight|round}}</td>
+                    <td scope="" style="text-align:right">{{etf.weight_comp|round}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
