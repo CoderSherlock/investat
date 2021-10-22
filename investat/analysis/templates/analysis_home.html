@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% load dict_ops%}
+{% load dict_ops %}
+{% load math_ops %}
 {% block header %}
 <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <div class="container">
@@ -48,7 +49,7 @@
             {% for key, value in holdings.items%}
             <tr>
                 <th scope="row"><a href='/holding/{{key}}'>{{key}}</a></th>
-                <td scope="">{{value}}</td>
+                <td scope="">{{value|round}}</td>
                 <td scope="">{{cost_per_share|get_item:key}}</td>
                 <td scope="">{{current_prices|get_item:key}}</td>
                 <td scope="">{{market_value|get_item:key}}</td>
@@ -62,7 +63,7 @@
 <br>
 <div class="row">
     <div class="col-sm-6 col-12">
-        <h4 class="float-begin">Internal Return Rate</h4>
+        <h4 class="float-begin">Internal Return Rate (%)</h4>
         <canvas id="myChart1" width="400" height="200"></canvas>
         <script>
             var standard = 0
@@ -96,7 +97,7 @@
         </script>
     </div>
     <div class="col-sm-6 col-12">
-        <h4 class="float-begin">Total Return - W/O Bonus stock</h4>
+        <h4 class="float-begin">Total Return - W/O Bonus stock (%)</h4>
         <canvas id="myChart2" width="400" height="200"></canvas>
         <script>
             var standard = 0
@@ -106,7 +107,7 @@
                 data: {
                     labels: [{%for key, value in return_on_sell_list %} '{{key}}',{% endfor %}],
             datasets: [{
-                label: 'XIRR',
+                label: 'Return',
                 data: [{%for key, value in return_on_sell_list %} '{{value}}', {% endfor %}],
                 fill: true,
                 backgroundColor: '#7DCEA0',

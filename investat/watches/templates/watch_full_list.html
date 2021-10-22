@@ -59,13 +59,13 @@
                     {% endif%}
                     <th scope="row">{{etf.id}}</th>
                     <td scope=""><a target="_blank" href='https://finance.yahoo.com/quote/{{etf.ticker}}?p={{etf.ticker}}'>{{etf.ticker}}</a></td>
-                    <td scope="">{{etf.tr_1m|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_3m|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_ytd|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_1y|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_3y|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_5y|float_to_percent}}</td>
-                    <td scope="">{{etf.tr_10y|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_1m < 0 %}class="table-danger"{% elif etf.tr_1m > 0 %}class="table-success"{% endif %}>{{etf.tr_1m|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_3m < 0 %}class="table-danger"{% elif etf.tr_3m > 0 %}class="table-success"{% endif %}>{{etf.tr_3m|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_ytd < 0 %}class="table-danger"{% elif etf.tr_ytd > 0 %}class="table-success"{% endif %}>{{etf.tr_ytd|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_1y < 0 %}class="table-danger"{% elif etf.tr_1y > 0 %}class="table-success"{% endif %}>{{etf.tr_1y|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_3y < 0 %}class="table-danger"{% elif etf.tr_3y > 0 %}class="table-success"{% endif %}>{{etf.tr_3y|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_5y < 0 %}class="table-danger"{% elif etf.tr_5y > 0 %}class="table-success"{% endif %}>{{etf.tr_5y|float_to_percent}}</td>
+                    <td scope="" {% if etf.tr_10y < 0 %}class="table-danger"{% elif etf.tr_10y > 0 %}class="table-success"{% endif %}>{{etf.tr_10y|float_to_percent}}</td>
                     <td scope="" style="text-align:right">{{etf.weight|round}}</td>
                     <td scope="" style="text-align:right">{{etf.weight_comp|round}}</td>
                 </tr>

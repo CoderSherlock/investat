@@ -40,7 +40,7 @@
             {% for ticker, volume in holdings.items %}
             <tr>
                 <th scope="row"><a href='/holding/{{ticker}}'>{{ticker}}</a></th>
-                <td scope="">{{volume}}</td>
+                <td scope="">{{volume|round}}</td>
                 <td scope="">0</td>
 
             </tr>
