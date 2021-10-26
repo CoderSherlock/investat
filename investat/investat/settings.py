@@ -134,3 +134,23 @@ CRONJOBS = [
     ('* * * * *', 'analysis.live_quote.quote_live_price'),
     ('0 0 * * *', 'watches.live_quote.quote_ticker_table'),
 ]
+
+# Logger configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': './debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

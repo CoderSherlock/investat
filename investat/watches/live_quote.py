@@ -6,6 +6,7 @@ from yahoo_fin import stock_info
 import datetime
 from django.utils.timezone import make_aware
 from watches.models import ETF
+import logging
 
 """
 Live Quote hourly, saved in analysis.live_price
@@ -13,11 +14,13 @@ Live Quote hourly, saved in analysis.live_price
 
 
 def quote_ticker_table():
+    logger = logging.getLogger('django')
     all_etfs = ETF.objects.all()[:]
     for etf in all_etfs:
         try:
             data = None
             data = stock_info.get_performance_trailing_returns(etf.ticker)
+            logger.debug('[{0}] {1}'.format(etf.ticker, data))
             obj, _ = ETF.objects.update_or_create(
                 ticker=etf.ticker,
                 defaults={
@@ -72,3 +75,15 @@ def quote_ticker_table():
                     }
                 )
                 obj.save()
+
+# Test function, will be removed from production
+def quote_etf_performance(etf):
+    try:
+        data = None
+        data = stock_info.get_performance_trailing_returns(etf)
+        print(data)
+    except Exception as e:
+        print("ETF {0}'s performance can't be updated ".format(etf))
+        print(e)
+        if (data != None):
+            print('??')
