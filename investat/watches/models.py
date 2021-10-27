@@ -30,6 +30,10 @@ class ETF(models.Model):
     tr_lbull_c = models.FloatField(default=0)
     tr_lbear_c = models.FloatField(default=0)
 
+    # Market and NAV price
+    market_price = models.FloatField(default=0)
+    nav_price = models.FloatField(default=0)
+
 
 def batch_insert_etf(filename):
     with open(filename, 'r') as etffile:

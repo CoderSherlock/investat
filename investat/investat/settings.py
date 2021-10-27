@@ -131,8 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
     # Do not change before remove cronjob
-    ('* * * * *', 'analysis.live_quote.quote_live_price'),
-    ('0 0 * * *', 'watches.live_quote.quote_ticker_table'),
+    ('* 8-17 * * *', 'analysis.live_quote.quote_live_price'),
+    ('0 17 * * *', 'watches.live_quote.quote_ticker_table', '>> /tmp/debug.log'),
 ]
 
 # Logger configuration

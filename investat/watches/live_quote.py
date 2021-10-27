@@ -19,7 +19,7 @@ def quote_ticker_table():
     for etf in all_etfs:
         try:
             data = None
-            data = stock_info.get_performance_trailing_returns(etf.ticker)
+            data = stock_info.get_performance_trailing_returns_and_navprice(etf.ticker)
             logger.debug('[{0}] {1}'.format(etf.ticker, data))
             obj, _ = ETF.objects.update_or_create(
                 ticker=etf.ticker,
@@ -43,6 +43,9 @@ def quote_ticker_table():
                     'tr_10y_c': data['trailingReturnsCat']['tenYear'],
                     'tr_lbull_c': data['trailingReturnsCat']['lastBullMkt'],
                     'tr_lbear_c': data['trailingReturnsCat']['lastBearMkt'],
+
+                    'market_price': data['marketPrice'],
+                    'nav_price': data['navPrice'],
                 }
             )
             obj.save()
