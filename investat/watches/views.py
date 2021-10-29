@@ -32,6 +32,8 @@ def etf_full_list(request):
                               etf['tr_1y'] - etf['tr_1y_c'] + etf['tr_3y'] - etf['tr_3y_c'] + etf['tr_5y'] - etf['tr_5y_c'] + etf['tr_10y'] - etf['tr_10y_c']) / 7
         etf['weight_comp'] = etf['weight'] * 0.6 + etf['comp_weight'] * 0.4
 
+        etf['premium_rate'] = (etf['market_price'] - etf['nav_price']) / etf['nav_price'] if etf['nav_price'] != 0 else float('-inf')
+
     all_etf_tickers.sort(key=lambda etf: etf['weight_comp'], reverse=True)
     context['etfs'] = all_etf_tickers
     context['title'] = 'All ETFs'

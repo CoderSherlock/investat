@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load math_ops %}
+{% load dict_ops %}
 {% block header %}
 <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <div class="container">
@@ -32,17 +33,16 @@
             <tr>
                 <th scope="col">Ticker</th>
                 <th scope="col">Holding Volume</th>
-                <th scope="col">Current value</th>
+                <th scope="col">Current Market Value</th>
 
             </tr>
         </thead>
         <tbody>
-            {% for ticker, volume in holdings.items %}
+            {% for ticker in holdings.keys %}
             <tr>
                 <th scope="row"><a href='/holding/{{ticker}}'>{{ticker}}</a></th>
-                <td scope="">{{volume|round}}</td>
-                <td scope="">0</td>
-
+                <td scope="">{{holdings|get_item:ticker|get_item:'vol'|round}}</td>
+                <td scope="">{{holdings|get_item:ticker|get_item:'value'|round}}</td>
             </tr>
             {% endfor %}
         </tbody>

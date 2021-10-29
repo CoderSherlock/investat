@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 
 from .models import Brokerage, Dividend, Ticker, Transaction
+from analysis.models import Live_price
 import datetime
 import statistics
 
@@ -67,9 +68,11 @@ def holdings(request):
     for transaction in all_transactions:
         vol = transaction.volume if transaction.trans_type in ('B', 'R') else -transaction.volume
         if transaction.ticker not in all_holdings:
-            all_holdings[transaction.ticker] = vol
+            all_holdings[transaction.ticker] = {'vol': vol}
         else:
-            all_holdings[transaction.ticker] += vol
+            all_holdings[transaction.ticker]['vol'] += vol
+    for ticker in all_holdings.keys():
+        all_holdings[ticker]['value'] = all_holdings[ticker]['vol'] * Live_price.objects.get(ticker=ticker).price
     template = loader.get_template('holdings.html')
     context = {'holdings': all_holdings}
     return HttpResponse(template.render(context, request))

@@ -12,6 +12,12 @@ def float_to_percent(a):
 def round_by_k(a, b=4):
     return round(a, b)
 
+def divide(a, b):
+    if (b == 0):
+        return 0
+    return float(a) / b
+
 register.filter('multiply', multiply)
 register.filter('float_to_percent', float_to_percent)
 register.filter('round', round_by_k)
+register.filter('divide', divide)

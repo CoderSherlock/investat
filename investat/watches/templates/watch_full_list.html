@@ -46,6 +46,7 @@
                     <th scope="col">10y</th>
                     <th scope="col" style="text-align:right">Weight</th>
                     <th scope="col" style="text-align:right">Weighted Composite</th>
+                    <th scope="col" style="text-align:right">Premium Rate</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,6 +69,7 @@
                     <td scope="" {% if etf.tr_10y < 0 %}class="table-danger"{% elif etf.tr_10y > 0 %}class="table-success"{% endif %}>{{etf.tr_10y|float_to_percent}}</td>
                     <td scope="" style="text-align:right">{{etf.weight|round}}</td>
                     <td scope="" style="text-align:right">{{etf.weight_comp|round}}</td>
+                    <td scope="" style="text-align:right" {% if etf.premium_rate < 0 %}class="table-danger"{% elif etf.premium_rate > 0 %}class="table-success"{% endif %}>{{etf.premium_rate|float_to_percent}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
