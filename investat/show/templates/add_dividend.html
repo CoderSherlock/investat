@@ -17,6 +17,20 @@
         </div>
     </div>
 </header>
+<script>
+    {% autoescape off %}
+    window.holdings = JSON.parse('{{ticker_holding_vol}}');
+    {% endautoescape %}
+
+    function gross_per_share_calculate(amount) {
+
+        var obj_ticker = document.getElementsByName("ticker")[0];
+        var ticker = obj_ticker.options[obj_ticker.selectedIndex].value;
+        var gross_per_share = parseFloat(amount.value) / holdings[ticker]["vol"];
+        var obj_gps = document.getElementsByName("gross_per_share");
+        obj_gps[0].value = (gross_per_share.toFixed(2)).toString();
+    }
+</script>
 {% endblock %}
 {% block body %}
 <div>
@@ -42,7 +56,7 @@
                         </div>
                         <div class="mb-3">
                             <label>Amount</label>
-                            <input type="text" name="amount" class="form-control" placeholder="Amount, default currency is USD e.g 17.8">
+                            <input type="text" name="amount" class="form-control" onchange="gross_per_share_calculate(this)" placeholder="Amount, default currency is USD e.g 17.8">
                         </div>
                         <div class="mb-3">
                             <label>Gross per Share</label>

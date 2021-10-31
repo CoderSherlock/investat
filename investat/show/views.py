@@ -9,6 +9,7 @@ from .models import Brokerage, Dividend, Ticker, Transaction
 from analysis.models import Live_price
 import datetime
 import statistics
+import json
 
 
 def index(request):
@@ -149,9 +150,23 @@ def add_dividend_record(request):
     template = loader.get_template('add_dividend.html')
     all_tickers = Ticker.objects.order_by('ticker')[:]
     all_brokerages = Brokerage.objects.all()[:]
+    all_transactions = Transaction.objects.order_by('trans_date')[:]
+    
+    """
+    Get current holdings volume for all tickers
+    """
+    ticker_holding_vol = {}
+    for transaction in all_transactions:
+        vol = transaction.volume if transaction.trans_type in ('B', 'R') else -transaction.volume
+        if transaction.ticker.id not in ticker_holding_vol:
+            ticker_holding_vol[transaction.ticker.id] = {'vol': vol}
+        else:
+            ticker_holding_vol[transaction.ticker.id]['vol'] += vol
+        
     context = {}
     context['all_tickers'] = all_tickers
     context['all_brokerages'] = all_brokerages
+    context['ticker_holding_vol'] = json.dumps(ticker_holding_vol)
     return HttpResponse(template.render(context, request))
 
 def add_dividend_record_submit(request):
