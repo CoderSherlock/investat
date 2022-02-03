@@ -67,7 +67,10 @@ def index(request):
         lp = Live_price.objects.get(ticker=holding)
         current_prices[holding] = round(lp.price, 4)
         update_time.append(lp.quote_time)
-    market_price_update_time = min(update_time)
+    if update_time:
+        market_price_update_time = min(update_time)
+    else:
+        market_price_update_time = datetime.datetime.now()
 
     """
     Total dividend
