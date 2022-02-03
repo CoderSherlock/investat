@@ -72,8 +72,15 @@ def holdings(request):
             all_holdings[transaction.ticker] = {'vol': vol}
         else:
             all_holdings[transaction.ticker]['vol'] += vol
+
+    # Holding volume cast to 0 if it is -0.0
+    for ticker in all_holdings.keys():
+        all_holdings[ticker]['vol'] = round(all_holdings[ticker]['vol'], 3) + 0
+
+    # Retrieve the current market values
     for ticker in all_holdings.keys():
         all_holdings[ticker]['value'] = all_holdings[ticker]['vol'] * Live_price.objects.get(ticker=ticker).price
+
     template = loader.get_template('holdings.html')
     context = {'holdings': all_holdings}
     return HttpResponse(template.render(context, request))
@@ -101,13 +108,13 @@ def holding_detail(request, ticker):
                 cost_per_share_vol += transaction.volume
         else:
             current_vol += -transaction.volume
-    holding_amount_change.append([last_date, current_vol])
+    holding_amount_change.append([last_date, round(current_vol, 3)])
 
     context = {'transactions': transactions,
                'ticker': ticker_object,
                'changes_by_date': holding_amount_change,
                'cost_per_share': round(cost_per_share / cost_per_share_vol, 4),
-               'current_vol': holding_amount_change[-1][-1]}
+               'current_vol': holding_amount_change[-1][-1] + 0}
     return HttpResponse(template.render(context, request))
 
 

@@ -53,7 +53,7 @@ def index(request):
         cost_per_share[key] = round(value / cost_per_share_vol[key], 4)
 
     all_holdings = {key: value for key,
-                    value in all_holdings.items() if value != 0}
+                    value in all_holdings.items() if round(value, 3) != 0}
 
     # Later used for XIRR
     all_transactions_and_dividend = {key: [] for key in all_holdings.keys()}
