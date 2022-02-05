@@ -22,3 +22,7 @@ urlpatterns = [
     path('analysis/', include('analysis.urls')),
     path('watches/', include('watches.urls')),
 ]
+
+handler404 = "investat.views.page_not_found_view"
+handler500 = "investat.views.server_error_view"
+

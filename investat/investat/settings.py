@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o6ft(%11u78ev=g1%4dr0=2r#27fjd_lg7c8b)kusf3*#*tw5t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.1.3', '127.0.0.1', '192.168.0.217', '192.168.0.167']
 
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'investat.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'investat/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
